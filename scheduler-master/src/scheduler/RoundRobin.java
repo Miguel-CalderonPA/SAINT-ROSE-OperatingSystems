@@ -8,37 +8,40 @@ import java.util.LinkedList;
  */
 public class RoundRobin extends Scheduler {
 
+	// Declaring the Queues
     private LinkedList<ProcessControlBlock> readyQueue;
     private LinkedList<ProcessControlBlock> waitQueue;
     private LinkedList<ProcessControlBlock> terminated;
-    private int timeSlice;
+    private int timeSlice; // the time slice
     //--------------------------------------------------------------------------------------
 
+	// Constructor
     public RoundRobin(int contextSwitchTime, int slice) {
-        super(contextSwitchTime);
+        super(contextSwitchTime); // goes to parent and assigns 
+		// instaniting the queues
         readyQueue = new LinkedList<ProcessControlBlock>();
         waitQueue = new LinkedList<ProcessControlBlock>();
         terminated = new LinkedList<ProcessControlBlock>();
-        timeSlice = slice;
+        timeSlice = slice; // assigning time slice
     }
 
     //--------------------------------------------------------------------------------------
 
     @Override
     public boolean isEmpty() {
-        return readyQueue.isEmpty() && waitQueue.isEmpty();
+        return readyQueue.isEmpty() && waitQueue.isEmpty(); // simple if done basically
     }
 
     @Override
-    public ProcessControlBlock next() {
-        for(ProcessControlBlock pcb : waitQueue) {
+    public ProcessControlBlock next() { // not sure
+        for(ProcessControlBlock pcb : waitQueue) { // for each process in waitQueue
             if(pcb.state().equals(ProcessControlBlock.READY)) {
-                readyQueue.add(pcb);
-                waitQueue.remove(pcb);
+                readyQueue.add(pcb); // adds to ready
+                waitQueue.remove(pcb); // goes into process
             }
         }
-        if(! readyQueue.isEmpty()) return readyQueue.remove();
-        return null;
+        if(! readyQueue.isEmpty()) return readyQueue.remove(); // return the readied process
+        return null; // only if no process
     }
 
 
@@ -47,9 +50,11 @@ public class RoundRobin extends Scheduler {
     @Override
     public void execute(ProcessControlBlock pcb) {
         // while time slice isn't over execute
-        int slice = 0;
+		
+        int slice = 0;// set the count for slice
+		// do the scheduled time 
         while(pcb.state().equals(ProcessControlBlock.READY) && slice < timeSlice )  {
-            pcb.execute(1, clock);
+            pcb.execute(1, clock); // quantum and clock
             slice++;
             tick();
         }
@@ -58,7 +63,7 @@ public class RoundRobin extends Scheduler {
     //--------------------------------------------------------------------------------------
 
     @Override
-    public void add(ProcessControlBlock pcb) {
+    public void add(ProcessControlBlock pcb) { // just sorts the processes
         if(pcb.state().equals(ProcessControlBlock.READY)) readyQueue.add(pcb);
         else if(pcb.state().equals(ProcessControlBlock.WAITING)) waitQueue.add(pcb);
         else if(pcb.state().equals(ProcessControlBlock.TERMINATED)) terminated.add(pcb);
@@ -68,7 +73,7 @@ public class RoundRobin extends Scheduler {
     //--------------------------------------------------------------------------------------
 
     @Override
-    public Iterator<ProcessControlBlock> iterator() {
+    public Iterator<ProcessControlBlock> iterator() { // iterates through list
         LinkedList<ProcessControlBlock> everything = new LinkedList<ProcessControlBlock>();
         everything.addAll(readyQueue);
         everything.addAll(waitQueue);

@@ -6,7 +6,7 @@ package scheduler;
 public class ProcessControlBlock {
     private int duration;
     private int cpuBurstTime;
-    private int ioBurstTime;
+    private int ioBurstTime; 
     private int currentBurstDuration;  //how much of the current burst is left.
     private String state; //the current state of the process.
     private int pid;  //the pid of the process.
@@ -34,15 +34,15 @@ public class ProcessControlBlock {
         state = READY;
         pid = pidSource++;
     }
-
+					// time used
     public int execute(int quantum, int clock) {
-        if(quantum < currentBurstDuration) {
+        if(quantum < currentBurstDuration) {  // will still exist
             System.out.println(pid + " will use entire quantum.");
             currentBurstDuration -= quantum;
             duration -= quantum;
             System.out.println(pid + " remaining duration: " + duration);
             return quantum;
-        } else if(currentBurstDuration < duration){
+        } else if(currentBurstDuration < duration){ // CONFUSED
             System.out.println(pid + " will complete CPU burst.");
             int usedTime = currentBurstDuration;
             duration -= currentBurstDuration;
@@ -51,9 +51,9 @@ public class ProcessControlBlock {
             ioRequestTime = clock;
             System.out.println(pid + " remaining duration: " + duration);
             return usedTime;
-        } else {
+        } else {  // will finish
             System.out.println(pid + " will terminate.");
-            int usedTime = duration;
+            int usedTime = duration; // remainder will be used time
             duration = 0;
             state = TERMINATED;
             System.out.println(pid + " remaining duration: " + duration);
@@ -62,8 +62,8 @@ public class ProcessControlBlock {
     }
 
     public void update(int clock) {
-        //System.out.println(pid + " clock: " + clock + "; currentBurstDuration: " + currentBurstDuration + "; ioRequestTime: " + ioRequestTime);
-        if(state.equals(WAITING)) {
+        System.out.println(pid + " clock: " + clock + "; currentBurstDuration: " + currentBurstDuration + "; ioRequestTime: " + ioRequestTime);
+        if(state.equals(WAITING)) { // updates the process from waiting to ready
             if(clock - currentBurstDuration > ioRequestTime) {
                 currentBurstDuration = cpuBurstTime;
                 state = READY;
