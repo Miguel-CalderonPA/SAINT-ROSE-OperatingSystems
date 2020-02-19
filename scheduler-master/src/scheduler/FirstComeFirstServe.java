@@ -33,11 +33,11 @@ public class FirstComeFirstServe extends Scheduler {
     public ProcessControlBlock next() {
         for(ProcessControlBlock pcb : waitQueue) {
             if(pcb.state().equals(ProcessControlBlock.READY)) {
-                readyQueue.add(pcb);
-                waitQueue.remove(pcb);
+                readyQueue.add(pcb); // add to ready if ready
+                waitQueue.remove(pcb); // remove from wait
             }
         }
-        if(! readyQueue.isEmpty()) return readyQueue.remove();
+        if(! readyQueue.isEmpty()) return readyQueue.remove(); // return process
         return null;
     }
 

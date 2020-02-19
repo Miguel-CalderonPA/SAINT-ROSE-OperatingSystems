@@ -23,7 +23,7 @@ public abstract class Scheduler implements Iterable<ProcessControlBlock> {
         while(!isEmpty() && clock < 100) { 
             updateProcessControlBlocks(); // update clocks
             System.out.println("---------Current Processes----------(CLOCK: " + clock + ")");
-            for(ProcessControlBlock pcb : this) { // outputs status for eacg
+            for(ProcessControlBlock pcb : this) { // outputs status for each
                 System.out.println(pcb);
             }
             ProcessControlBlock pcb = next(); // retrieves next
@@ -37,7 +37,6 @@ public abstract class Scheduler implements Iterable<ProcessControlBlock> {
             add(pcb); // re checks status
         }
     }
-
     public void tick() {
         clock++; 
     }

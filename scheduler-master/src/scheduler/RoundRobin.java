@@ -37,7 +37,7 @@ public class RoundRobin extends Scheduler {
         for(ProcessControlBlock pcb : waitQueue) { // for each process in waitQueue
             if(pcb.state().equals(ProcessControlBlock.READY)) {
                 readyQueue.add(pcb); // adds to ready
-                waitQueue.remove(pcb); // goes into process
+                waitQueue.remove(pcb); // goes into process // ASK
             }
         }
         if(! readyQueue.isEmpty()) return readyQueue.remove(); // return the readied process
