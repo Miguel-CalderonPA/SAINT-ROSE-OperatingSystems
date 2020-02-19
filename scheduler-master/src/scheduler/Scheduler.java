@@ -10,7 +10,7 @@ public abstract class Scheduler implements Iterable<ProcessControlBlock> {
 
     public Scheduler(int contextSwitchTime) {
         this.contextSwitchTime = contextSwitchTime; // is set by super
-        clock = 0; // initialize clock
+        clock = 0; // initialize clock commit?
     }
 
     public abstract void add(ProcessControlBlock pcb);
