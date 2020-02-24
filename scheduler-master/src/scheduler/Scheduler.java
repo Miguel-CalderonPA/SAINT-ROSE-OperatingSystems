@@ -24,7 +24,7 @@ public abstract class Scheduler implements Iterable<ProcessControlBlock> {
             updateProcessControlBlocks(); // update clocks
             System.out.println("---------Current Processes----------(CLOCK: " + clock + ")");
             for(ProcessControlBlock pcb : this) { // outputs status for each
-                System.out.println(pcb);
+           //     System.out.println(pcb);
             }
             ProcessControlBlock pcb = next(); // retrieves next
             clock += contextSwitchTime;  //a context switch is happening...
@@ -32,7 +32,7 @@ public abstract class Scheduler implements Iterable<ProcessControlBlock> {
                 tick(); // clock continues
                 continue;
             }
-            System.out.println(pcb + "@" + clock); // prints current process
+           // System.out.println(pcb + "@" + clock); // prints current process
             execute(pcb); // goes to scheduler specific execution
             add(pcb); // re checks status
         }

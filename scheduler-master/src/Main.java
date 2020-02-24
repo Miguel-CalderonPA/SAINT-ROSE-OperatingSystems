@@ -13,14 +13,16 @@ public class Main {
 
     (4) For each, show average wait time when all processes are finished (15%)
 	 */
-	ProcessControlBlock a = new ProcessControlBlock(20, 5, 3);
-	ProcessControlBlock b = new ProcessControlBlock(20, 10, 1);
-	ProcessControlBlock c = new ProcessControlBlock(17, 10, 1);
-	RoundRobin sched = new RoundRobin(0, 5);
+	// dur 20 cpu2,  io 3
+
+	ProcessControlBlock a = new ProcessControlBlock(20, 2, 3);
+	ProcessControlBlock b = new ProcessControlBlock(20, 7, 1);
+	//ProcessControlBlock c = new ProcessControlBlock(17, 10, 1);
+	RoundRobin sched = new RoundRobin(0, 3);
 
     sched.add(a);
     sched.add(b);
-    sched.add(c);
+   // sched.add(c);
     sched.execute();
 
 

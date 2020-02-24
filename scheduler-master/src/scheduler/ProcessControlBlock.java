@@ -12,7 +12,7 @@ public class ProcessControlBlock {
     private int pid;  //the pid of the process.
     private int ioRequestTime; //the moment in time when an I/O request is made.
 
-    private static int pidSource = 2;
+    private static int pidSource = 1;
 
     public static final String READY = "READY";
     public static final String NEW = "NEW";
@@ -37,19 +37,19 @@ public class ProcessControlBlock {
 					// time used
     public int execute(int quantum, int clock) {
         if(quantum < currentBurstDuration) {  // will still exist
-            System.out.println(pid + " will use entire quantum.");
+          //  System.out.println(pid + " will use entire quantum.");
             currentBurstDuration -= quantum;
             duration -= quantum;
-            System.out.println(pid + " remaining duration: " + duration);
+           // System.out.println(pid + " remaining duration: " + duration);
             return quantum;
         } else if(currentBurstDuration < duration){ // CONFUSED
-            System.out.println(pid + " will complete CPU burst.");
+          //  System.out.println(pid + " will complete CPU burst.");
             int usedTime = currentBurstDuration;
             duration -= currentBurstDuration;
             currentBurstDuration = ioBurstTime;
             state = WAITING;
             ioRequestTime = clock;
-            System.out.println(pid + " remaining duration: " + duration);
+           // System.out.println(pid + " remaining duration: " + duration);
             return usedTime;
         } else {  // will finish
             System.out.println(pid + " will terminate.");
@@ -62,7 +62,7 @@ public class ProcessControlBlock {
     }
 
     public void update(int clock) {
-        System.out.println(pid + " clock: " + clock + "; currentBurstDuration: " + currentBurstDuration + "; ioRequestTime: " + ioRequestTime);
+       // System.out.println(pid + " clock: " + clock + "; currentBurstDuration: " + currentBurstDuration + "; ioRequestTime: " + ioRequestTime);
         if(state.equals(WAITING)) { // updates the process from waiting to ready
             if(clock - currentBurstDuration > ioRequestTime) {
                 currentBurstDuration = cpuBurstTime;

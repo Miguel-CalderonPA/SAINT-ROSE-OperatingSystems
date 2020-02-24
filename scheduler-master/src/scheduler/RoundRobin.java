@@ -5,6 +5,9 @@ import java.util.LinkedList;
 
 /**
  * Created by calderonm063 on 2/17/20.
+ * if still remaining go to ready, if i/o go to waiting
+ * CPU utliz is time not idle
+ * Waiting - time in ready
  */
 public class RoundRobin extends Scheduler {
 
@@ -18,7 +21,7 @@ public class RoundRobin extends Scheduler {
 	// Constructor
     public RoundRobin(int contextSwitchTime, int slice) {
         super(contextSwitchTime); // goes to parent and assigns 
-		// instaniting the queues
+		// instantiating the queues
         readyQueue = new LinkedList<ProcessControlBlock>();
         waitQueue = new LinkedList<ProcessControlBlock>();
         terminated = new LinkedList<ProcessControlBlock>();
@@ -50,14 +53,22 @@ public class RoundRobin extends Scheduler {
     @Override
     public void execute(ProcessControlBlock pcb) {
         // while time slice isn't over execute
-		
-        int slice = 0;// set the count for slice
+		int usedTime=0;
+		int slice = 0;
+		//int origClock;
+        // set the count for slice
 		// do the scheduled time 
-        while(pcb.state().equals(ProcessControlBlock.READY) && slice < timeSlice )  {
-            pcb.execute(1, clock); // quantum and clock
-            slice++;
-            tick();
-        }
+       // while(pcb.state().equals(ProcessControlBlock.READY) )  {
+
+        //    while(slice < timeSlice && pcb.state().equals(ProcessControlBlock.READY)) {
+                usedTime += pcb.execute(timeSlice, clock); // quantum and clock
+                slice++;
+           //     tick();
+         //   }
+        System.out.print("Process: " + pcb.pid() + " ran from " + clock + " to ");
+        tick(usedTime);
+            System.out.print(clock + "\n");
+       // }
     }
 
     //--------------------------------------------------------------------------------------
