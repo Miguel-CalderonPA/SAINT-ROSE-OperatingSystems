@@ -67,7 +67,7 @@ public class RoundRobin extends Scheduler {
          //   }
         System.out.print("Process: " + pcb.pid() + " ran from " + clock + " to ");
         tick(usedTime);
-            System.out.print(clock + "\n");
+            System.out.print(clock - 1 + "\n");
        // }
     }
 
