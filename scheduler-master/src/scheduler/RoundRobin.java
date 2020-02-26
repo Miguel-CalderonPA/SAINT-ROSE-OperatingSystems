@@ -40,11 +40,11 @@ public class RoundRobin extends Scheduler {
         for(ProcessControlBlock pcb : waitQueue) { // for each process in waitQueue
             if(pcb.state().equals(ProcessControlBlock.READY)) {
                 readyQueue.add(pcb); // adds to ready
-                waitQueue.remove(pcb); // goes into process // ASK
+                waitQueue.remove(pcb); // goes into process
             }
         }
-        if(! readyQueue.isEmpty()) return readyQueue.remove(); // return the readied process
-        return null; // only if no process
+        if(! readyQueue.isEmpty()) { return readyQueue.remove(); } // return the readied process
+        return null; // if no process in ready queue
     }
 
 
@@ -54,32 +54,29 @@ public class RoundRobin extends Scheduler {
     public void execute(ProcessControlBlock pcb) {
         // while time slice isn't over execute
 		int usedTime=0;
-		int slice = 0;
-		//int origClock;
-        // set the count for slice
-		// do the scheduled time 
-       // while(pcb.state().equals(ProcessControlBlock.READY) )  {
-
-        //    while(slice < timeSlice && pcb.state().equals(ProcessControlBlock.READY)) {
-                usedTime += pcb.execute(timeSlice, clock); // quantum and clock
-                slice++;
-           //     tick();
-         //   }
-        System.out.print("Process: " + pcb.pid() + " ran from " + clock + " to ");
+		usedTime += pcb.execute(timeSlice, clock); // quantum and clock
+        System.out.print("|         Process " + pcb.pid() + " ran from " + clock + " to ");
         tick(usedTime);
-            System.out.print(clock - 1 + "\n");
-       // }
+        System.out.print(clock - 1 + "\n");
+
     }
 
     //--------------------------------------------------------------------------------------
 
     @Override
     public void add(ProcessControlBlock pcb) { // just sorts the processes
-        if(pcb.state().equals(ProcessControlBlock.READY)) readyQueue.add(pcb);
-        else if(pcb.state().equals(ProcessControlBlock.WAITING)) waitQueue.add(pcb);
-        else if(pcb.state().equals(ProcessControlBlock.TERMINATED)) terminated.add(pcb);
-        else throw new RuntimeException("Process " + pcb.pid() + " in illegal state: " + pcb.state());
+        switch (pcb.state()) {
+            case ProcessControlBlock.READY: readyQueue.add(pcb);break;
+            case ProcessControlBlock.WAITING: waitQueue.add(pcb);break;
+            case ProcessControlBlock.TERMINATED:terminated.add(pcb);break;
+            case ProcessControlBlock.NEW: pcb.update(clock); readyQueue.add(pcb);break;
+            default:
+                throw new RuntimeException("Process " + pcb.pid() + " in illegal state: " + pcb.state());
+        }
     }
+    //--------------------------------------------------------------------------------------
+
+
 
     //--------------------------------------------------------------------------------------
 
@@ -88,6 +85,7 @@ public class RoundRobin extends Scheduler {
         LinkedList<ProcessControlBlock> everything = new LinkedList<ProcessControlBlock>();
         everything.addAll(readyQueue);
         everything.addAll(waitQueue);
+        everything.addAll(terminated);
         return everything.iterator();
     }
 

@@ -31,43 +31,56 @@ public class ProcessControlBlock {
         this.cpuBurstTime = cpuBurstTime;
         this.ioBurstTime = ioBurstTime;
         this.currentBurstDuration = cpuBurstTime;
-        state = READY;
+        state = NEW;
         pid = pidSource++;
     }
 					// time used
     public int execute(int quantum, int clock) {
+        int theTime;
+         state = RUNNING;
+        System.out.println(this);
         if(quantum < currentBurstDuration) {  // will still exist
-          //  System.out.println(pid + " will use entire quantum.");
+            System.out.println("|         Process " + pid + " will use entire quantum.");
             currentBurstDuration -= quantum;
             duration -= quantum;
-           // System.out.println(pid + " remaining duration: " + duration);
-            return quantum;
-        } else if(currentBurstDuration < duration){ // CONFUSED
-          //  System.out.println(pid + " will complete CPU burst.");
+            System.out.println("|         Process " + pid + " remaining duration: " + duration);
+            theTime = quantum;
+            state = READY;
+        } else if(currentBurstDuration < duration){ // IO will happen
+            System.out.println("|         Process " + pid + " will complete CPU burst.");
             int usedTime = currentBurstDuration;
             duration -= currentBurstDuration;
             currentBurstDuration = ioBurstTime;
             state = WAITING;
             ioRequestTime = clock + (usedTime - 1);
-           // System.out.println(pid + " remaining duration: " + duration);
-            return usedTime;
+            System.out.println("|         Process " + pid + " remaining duration: " + duration);
+            theTime = usedTime;
         } else {  // will finish
-            System.out.println(pid + " will terminate.");
+            System.out.println("|         Process " + pid + " will terminate.");
             int usedTime = duration; // remainder will be used time
             duration = 0;
             state = TERMINATED;
-            System.out.println(pid + " remaining duration: " + duration);
-            return usedTime;
-        }
+            System.out.println("|         Process " + pid + " remaining duration: " + duration);
+            theTime = usedTime;
+        }// end termination
+
+        return theTime;
     }
 
     public void update(int clock) {
-       // System.out.println(pid + " clock: " + clock + "; currentBurstDuration: " + currentBurstDuration + "; ioRequestTime: " + ioRequestTime);
-        if(state.equals(WAITING)) { // updates the process from waiting to ready
+        //System.out.println("Process " + pid + " clock: " + clock + "; currentBurstDuration: " + currentBurstDuration + "; ioRequestTime: " + ioRequestTime);
+        if(state.equals(READY)){}
+        else if(state.equals(WAITING)) { // updates the process from waiting to ready
             if(clock - currentBurstDuration > ioRequestTime) {
                 currentBurstDuration = cpuBurstTime;
                 state = READY;
             }
+        }
+        else if(state.equals(NEW)) {
+            System.out.println("---------------Initializing Process----------------(CLOCK: " + clock + ")");
+            System.out.println(this);
+            state=READY;
+            System.out.println();
         }
     }
 
@@ -85,7 +98,7 @@ public class ProcessControlBlock {
     }
 
     public String toString() {
-        return "{" + pid + ", " + state + ", " + duration + ", " + cpuBurstTime +
+        return "|           {" + pid + ", " + state + ", " + duration + ", " + cpuBurstTime +
                     ", " + ioBurstTime + ", " + currentBurstDuration + "}";
     }
 }
